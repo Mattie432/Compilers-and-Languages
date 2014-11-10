@@ -2,13 +2,13 @@ package ex1;
 
 import java.util.ArrayList;
 
-public class Parser {
+public class Parser_YESNO {
 
 	int next = 0;
 
 	private ArrayList<Token> input;
 
-	public Parser(ArrayList<Token> tokenizedInput) {
+	public Parser_YESNO(ArrayList<Token> tokenizedInput) {
 		this.input = tokenizedInput;
 	}
 
