@@ -3,93 +3,84 @@ package ex1;
 import java.util.ArrayList;
 
 public class Parser {
-	
+
 	int next = 0;
-	
+
 	private ArrayList<Token> input;
 
-	public Parser(ArrayList<Token> tokenizedInput){
+	public Parser(ArrayList<Token> tokenizedInput) {
 		this.input = tokenizedInput;
 	}
-	
-	public boolean Start(){
+
+	public boolean Start() {
 		F();
-		
-		if(next == input.size()){
+
+		if (next == input.size()) {
 			System.out.println("true");
 			return true;
-		}else{
+		} else {
 			System.out.println("false");
 			return false;
 		}
 	}
-	
-	
-	private boolean E(){
+
+	private boolean E() {
 		int saveNext = next;
-		if(E_1()){
-			return true;
-		}else{
-			//Restore next pointer
+		next++;
+		// if next term is a plus
+		if (Term(Token.PLUS)) {
+			return T() && Term(Token.PLUS) && T();
+		} else {
 			next = saveNext;
-			return E_2();
+			if (E() && Term(Token.PLUS) && T()) {
+				return true;
+			} else {
+				// Restore next pointer
+				next = saveNext;
+				return T();
+			}
 		}
 	}
-	
-	private boolean E_1(){
-		return E() && Term(Token.PLUS) && T();
-	}
-	
-	private boolean E_2(){
-		return T();
-	}
-	
-	private boolean T(){
+
+	private boolean T() {
 		int saveNext = next;
-		if(T_1()){
-			return true;
-		}else{
-			//Restore next pointer
+		next++;
+		// if next term is a plus
+		if (Term(Token.MULTIPLY)) {
+			return F() && Term(Token.PLUS) && F();
+		} else {
 			next = saveNext;
-			return T_2();
+			if (T() && Term(Token.MULTIPLY) && F()) {
+				return true;
+			} else {
+				// Restore next pointer
+				next = saveNext;
+				return F();
+			}
 		}
 	}
-	
-	private boolean T_1(){
-		return T() && Term(Token.MULTIPLY) && F();
-	}
-	
-	private boolean T_2(){
-		return F();
-	}
-	
-	private boolean F(){
+
+	private boolean F() {
 		int saveNext = next;
-		if(F_1()){
+		if (Term(Token.LEFT_BRACKET) && E() && Term(Token.RIGHT_BRACKET)) {
 			return true;
-		}else{
-			//Restore next pointer
+		} else {
+			// Restore next pointer
 			next = saveNext;
-			return F_2();
+			return Term(Token.INT);
 		}
 	}
-	
-	private boolean F_1(){
-		return Term(Token.LEFT_BRACKET) && E() && Term(Token.RIGHT_BRACKET);
-	}
-	
-	private boolean F_2(){
-		return Term(Token.INT);
-	}
-	
+
 	/**
-	 * Checks if the next input matches a token.
-	 * Increments next pointer regardless of matched or not.
-	 * @param tok : Token - Token to match to
+	 * Checks if the next input matches a token. Increments next pointer
+	 * regardless of matched or not.
+	 * 
+	 * @param tok
+	 *            : Token - Token to match to
 	 * @return Boolean - Match sucsceeded
 	 */
-	private boolean Term(Token tok){
+	private boolean Term(Token tok) {
 		return input.get(next++) == tok;
 	}
-	
+
 }
