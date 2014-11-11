@@ -1,194 +1,147 @@
 package ex1;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 public class Parser {
 
 	int next = 0;
-	ArrayList<Tuple> opt = new ArrayList<Tuple>();
-
+	MyNode root = new MyNode(-1, "  ");
 	private ArrayList<Token> input;
 
+	/**
+	 * Constructor for the class, expects an array list of tokens from
+	 * Tokenizer.getOutputTok.
+	 * 
+	 * @param tokenizedInput
+	 *            : ArrayList<Token> input - the tokenized input
+	 */
 	public Parser(ArrayList<Token> tokenizedInput) {
 		this.input = tokenizedInput;
 	}
 
-	public boolean Start() throws Exception {
+	/**
+	 * Starts the parse of the tokenized input. Returns boolean if the parse is
+	 * sucsessful.
+	 * 
+	 * @return boolean - Parse Sucsessful.
+	 */
+	public boolean Start() {
+		root = new MyNode(-1, "  ");
+		next = 0;
+		boolean result = F(0, root);
+
+		// Check if it checked the whole input or ended early.
+		if (next != input.size()) {
+			result = false;
+		}
+
+		//Print result
 		System.out.println();
-		System.out.println("Result = " + F(0));
+		System.out.println("Valid input? = " + result);
 		System.out.println();
 
-		// int lvl = -1;
-		// while(!opt.isEmpty()){
-		// ArrayList<Tuple>toBeRemoved = new ArrayList<Tuple>();
-		//
-		// for(Tuple<String,Integer> t : opt){
-		// if(t.y == lvl){
-		// System.out.print(t.x+ " ");
-		// toBeRemoved.add(t);
-		// }
-		// }
-		// System.out.println();
-		// opt.removeAll(toBeRemoved);
-		// lvl++;
-		// }
-
-		int lvl = -1;
-		ArrayList<String> output = new ArrayList<String>();
-
-		while (!opt.isEmpty()) {
-			ArrayList<Tuple> toBeRemoved = new ArrayList<Tuple>();
-			ArrayList<Tuple> toBePrinted = new ArrayList<Tuple>();
-			ArrayList<Tuple> nextLevel = new ArrayList<Tuple>();
-
-			for (Tuple<String, Integer> t : opt) {
-				if (t.y == lvl) {
-					toBePrinted.add(t);
-					toBeRemoved.add(t);
-				}
-				if (t.y == lvl + 1) {
-					nextLevel.add(t);
-				}
-			}
-
-			if (output.size() < lvl + 2) {
-				output.add("");
-			}
-
-			int item = 0;
-			for (Tuple<String, Integer> t : toBePrinted) {
-				if (t.x == "F") {
-					int saveItem = item;
-					if (nextLevel.get(item++).x == "LEFT_BRACKET"
-							&& nextLevel.get(item++).x == "E"
-							&& nextLevel.get(item++).x == "RIGHT_BRACKET") {
-						// next item is a ( E )
-						output.set(lvl + 1, output.get(lvl + 1) + "   " + t.x);
-					} else {
-						item = saveItem;
-						// check if its an 'a'
-						if (nextLevel.get(item++).x == "INT") {
-							output.set(lvl + 1, output.get(lvl + 1) + t.x);
-						} else {
-							throw new Exception("ERROR");
-						}
-					}
-				} else if (t.x == "T'") {
-					int saveItem = item;
-					if (nextLevel.get(item++).x == "MULTIPLY"
-							&& nextLevel.get(item++).x == "F"
-							&& nextLevel.get(item++).x == "T'") {
-						// next item is a ( E )
-						output.set(lvl + 1, output.get(lvl + 1) + "   " + t.x);
-					} else {
-						item = saveItem;
-						// check if its an 'a'
-						if (nextLevel.get(item++).x == "ε") {
-							output.set(lvl + 1, output.get(lvl + 1) + t.x);
-						} else {
-							throw new Exception("ERROR");
-						}
-					}
-				} else if (t.x == "E") {
-					// check if its an 'a'
-					if (nextLevel.get(item++).x == "T" && nextLevel.get(item++).x == "E'" ) {
-						output.set(lvl + 1, output.get(lvl + 1) + "  " + t.x);
-					} else {
-						throw new Exception("ERROR");
-					}
-
-				}else if (t.x == "E'") {
-					int saveItem = item;
-					if (nextLevel.get(item++).x == "PLUS"
-							&& nextLevel.get(item++).x == "T"
-							&& nextLevel.get(item++).x == "E'") {
-						// next item is a ( E )
-						output.set(lvl + 1, output.get(lvl + 1) + "   " + t.x);
-					} else {
-						item = saveItem;
-						// check if its an 'a'
-						if (nextLevel.get(item++).x == "ε") {
-							output.set(lvl + 1, output.get(lvl + 1) + t.x);
-						} else {
-							throw new Exception("ERROR");
-						}
-					}
-				}else if (t.x == "T") {
-					int saveItem = item;
-					
-						// check if its an 'a'
-						if (nextLevel.get(item++).x == "F"
-								&& nextLevel.get(item++).x == "T'") {
-							output.set(lvl + 1, output.get(lvl + 1) + t.x);
-						} else {
-							throw new Exception("ERROR");
-						
-					}
-				}
-			}
-
-			System.out.println();
-			opt.removeAll(toBeRemoved);
-			lvl++;
-		}
-
-		for (String str : output) {
-			System.out.println(str);
-		}
-
-		return true;
-
+		return result;
 	}
 
-	private boolean E(Integer l) {
-		opt.add(new Tuple<String, Integer>("E", l - 1));
-		return T(l + 1) && E_prime(l + 1);
+	/**
+	 * Prints the parse tree to the console.
+	 */
+	public void printTree() {
+		System.out.println("Printing the parse tree for the input.");
+		root.getChildren().get(0).print();
 	}
 
-	private boolean E_prime(Integer l) {
-		opt.add(new Tuple<String, Integer>("E'", l - 1));
+	/**
+	 * Checks if the next token fits the 'E' type
+	 * @param l : Integer - the Level of the current operation
+	 * @param parent : MyNode - the parent of this node
+	 * @return boolean - is this type or not
+	 */
+	private boolean E(Integer l, MyNode parent) {
+		MyNode item = new MyNode(l + 1, "E ");
+		parent.getChildren().add(item);
+		return T(l + 1, item) && E_prime(l + 1, item);
+	}
+
+	/**
+	 * Checks if the next token fits the 'E_prime' type
+	 * @param l : Integer - the Level of the current operation
+	 * @param parent : MyNode - the parent of this node
+	 * @return boolean - is this type or not
+	 */
+	private boolean E_prime(Integer l, MyNode parent) {
+		MyNode item = new MyNode(l + 1, "E'");
+		parent.getChildren().add(item);
+
 		int saveNext = next;
-		if (Term(Token.PLUS, l) && T(l + 1) && E_prime(l + 1)) {
+		//check if +TE'
+		if (Term(Token.PLUS, l, item) && T(l + 1, item) && E_prime(l + 1, item)) {
 			return true;
 		} else {
-			opt.remove(opt.get(opt.size() - 1));
+			item.children.clear();
 			next = saveNext;
-			opt.add(new Tuple<String, Integer>("ε", l));
+			MyNode item2 = new MyNode(l, "e ");
+			item.children.add(item2);
 			return true;
 		}
 	}
 
-	private boolean T(Integer l) {
-		opt.add(new Tuple<String, Integer>("T", l - 1));
-		return F(l + 1) && T_prime(l + 1);
+	/**
+	 * Checks if the next token fits the 'T' type
+	 * @param l : Integer - the Level of the current operation
+	 * @param parent : MyNode - the parent of this node
+	 * @return boolean - is this type or not
+	 */
+	private boolean T(Integer l, MyNode parent) {
+		MyNode item = new MyNode(l + 1, "T ");
+		parent.getChildren().add(item);
+
+		return F(l + 1, item) && T_prime(l + 1, item);
 	}
 
-	private boolean T_prime(Integer l) {
-		opt.add(new Tuple<String, Integer>("T'", l - 1));
+
+	/**
+	 * Checks if the next token fits the 'T_prime' type
+	 * @param l : Integer - the Level of the current operation
+	 * @param parent : MyNode - the parent of this node
+	 * @return boolean - is this type or not
+	 */
+	private boolean T_prime(Integer l, MyNode parent) {
+		MyNode item = new MyNode(l + 1, "T'");
+		parent.getChildren().add(item);
+
 		int saveNext = next;
-		if (Term(Token.MULTIPLY, l) && F(l + 1) && T_prime(l + 1)) {
+		if (Term(Token.MULTIPLY, l, item) && F(l + 1, item)
+				&& T_prime(l + 1, item)) {
 			return true;
 		} else {
-			opt.remove(opt.get(opt.size() - 1));
 			next = saveNext;
-			opt.add(new Tuple<String, Integer>("ε", l));
+			item.children.clear();
+			MyNode item2 = new MyNode(l, "e ");
+			item.getChildren().add(item2);
 			return true;
 		}
 	}
 
-	private boolean F(Integer l) {
-		opt.add(new Tuple<String, Integer>("F", l - 1));
+	/**
+	 * Checks if the next token fits the 'F' type
+	 * @param l : Integer - the Level of the current operation
+	 * @param parent : MyNode - the parent of this node
+	 * @return boolean - is this type or not
+	 */
+	private boolean F(Integer l, MyNode parent) {
+		MyNode item = new MyNode(l + 1, "F ");
+		parent.getChildren().add(item);
 		int saveNext = next;
 
-		if (Term(Token.INT, l)) {
+		if (Term(Token.LEFT_BRACKET, l, item) && E(l + 1, item)
+				&& Term(Token.RIGHT_BRACKET, l, item)) {
 			return true;
 		} else {
-			opt.remove(opt.get(opt.size() - 1));
 			// Restore next pointer
 			next = saveNext;
-			return Term(Token.LEFT_BRACKET, l) && E(l + 1)
-					&& Term(Token.RIGHT_BRACKET, l);
+			item.children.clear();
+			return Term(Token.INT, l, item);
 		}
 	}
 
@@ -198,10 +151,29 @@ public class Parser {
 	 * 
 	 * @param tok
 	 *            : Token - Token to match to
+	 * @param l : Integer - level of the parse
+	 * @param parent : MyNode - the parent node
 	 * @return Boolean - Match sucsceeded
 	 */
-	private boolean Term(Token tok, Integer l) {
-		opt.add(new Tuple<String, Integer>(tok.toString(), l));
+	private boolean Term(Token tok, Integer l, MyNode parent) {
+
+		MyNode item;
+		String t = tok.toString();
+		if (t == "LEFT_BRACKET") {
+			item = new MyNode(l, "( ");
+		} else if (t == "RIGHT_BRACKET") {
+			item = new MyNode(l, ") ");
+		} else if (t == "MULTIPLY") {
+			item = new MyNode(l, "* ");
+		} else if (t == "PLUS") {
+			item = new MyNode(l, "+ ");
+		} else if (t == "INT") {
+			item = new MyNode(l, "a ");
+		} else {
+			item = null;
+		}
+		parent.getChildren().add(item);
+
 		return input.get(next++) == tok;
 	}
 

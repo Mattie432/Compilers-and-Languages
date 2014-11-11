@@ -8,16 +8,27 @@ public class Tokenizer {
 	ArrayList<String> outputStr = new ArrayList<>();
 	ArrayList<Token> outputTok = new ArrayList<>();
 	
+	/**
+	 * Constructor for class, takes a string as an input.
+	 * e.g. ( 5 + 4 )
+	 * @param str : String - input string
+	 */
 	public Tokenizer(String str){
 		input = str;
 	}
 	
+	/**
+	 * Start the tokenizer on the input string.
+	 * @return boolean - Sucsess or not
+	 * @throws Exception : Thrown if input invalid
+	 */
 	public boolean start() throws Exception{
 		Scanner s = new Scanner(input);
 		s.useDelimiter(" ");
+		System.out.print("Parsed tokens = ");
 		while (s.hasNext()){
 			String item = s.next();
-			System.out.println("Item: " + item);
+			System.out.print(item + ", ");
 			outputStr.add(item);
 			outputTok.add(determineToken(item));
 		}
@@ -25,10 +36,18 @@ public class Tokenizer {
 		return true;
 	}
 
+	/**
+	 * Getter method for the tokenized output
+	 * @return output : ArrayList<String> - the output.
+	 */
 	public ArrayList<String> getOutputStr(){
 		return outputStr;
 	}
 
+	/**
+	 * Getter method for the tokenised output
+	 * @return output : ArrayList<Token> - tokenized output
+	 */
 	public ArrayList<Token> getOutputTok(){
 		return outputTok;
 	}
@@ -56,7 +75,11 @@ public class Tokenizer {
 	}
 	
 	
-	
+	/**
+	 * Checks if the input string is a number
+	 * @param str : String - string to check
+	 * @return boolean - is numeric
+	 */
 	public static boolean isNumeric(String str)  
 	{  
 	  try  
