@@ -1,0 +1,56 @@
+# Compilers & Languages
+
+This project contains a number of assessments from my Compilers and Languages course during University. The assessments are detailed  below.
+
+#Ex1 - Parsers
+###### Question
+```
+E ::= E + T | T
+
+T ::= T * F | F
+
+F ::= (E) | a
+```
+
+Implement a parser for this language, as a hand-coded recursive descent parser.  You can either use JFlex/flex as a tokeniser, or write a simple tokeniser yourself.  As a minimum, it should recognize valid strings and reject invalid ones.  For additional credit, extend the parser to either print the parse tree, or evaluate expressions (you may need to modify the grammar slightly in order to do this, replacing the rule for F with the rule for F from the next exercise).
+
+###### Solution
+My solution first tokenizes the input with a hand-coded lexer. The input should be separated with spaces between the various elements of the expression (e.g. `( 5 + 4 )` ).
+
+The parser is then called on the tokenized input to parse the input according to the language definition. As the input language is left-recursive this meant that I had to use a modified version to remove the left recursion in order to build the parser.
+
+```
+E   ::= TE'
+E'  ::= +TE' | e
+T   ::= FT'
+T'  ::= *FT' | e
+F   ::= (E)  | a
+
+*e = epsilon/empty
+*a = numeric value
+```
+My program successfully parses the language and reports if the input is valid according to if the parser returns true. The parser also is able to print out a parse tree of the expression.
+
+for input `( 5 + 4 )`
+```
+\-- F
+    |-- (
+    |-- E
+    |   |-- T
+    |   |   |-- F
+    |   |   |   \-- a
+    |   |   \-- T'
+    |   |       \-- e
+    |   \-- E'
+    |       |-- +
+    |       |-- T
+    |       |   |-- F
+    |       |   |   \-- a
+    |       |   \-- T'
+    |       |       \-- e
+    |       \-- E'
+    |           \-- e
+    \-- )
+```
+
+Code for this is available [here](https://github.com/Mattie432/Compilers-and-Languages/tree/master/ProjectCode/src/ex1).
