@@ -26,6 +26,8 @@ package ex2;
 import java.io.*;
 
 import ex2.JCup.parser;
+import ex2.JCup.ParserTokens.E;
+import ex2.JCup.ParserTokens.F;
 import ex2.JFlex.*;
    
 public class Main {
@@ -33,9 +35,15 @@ public class Main {
     /* Start the parser */
     try {
     	String testFile = "src\\ex2\\test.txt";
-      parser p = new parser(new Lexer(new FileReader(testFile)));
+      Lexer lexedInput = new Lexer(new FileReader(testFile));
+      parser p = new parser(lexedInput);
       @SuppressWarnings("unused")
-	Object result = p.parse().value;      
+      E result = (E) p.parse().value;
+      System.out.println();
+      System.out.println();
+      result.print("",true);
+      
+int i = 0;   
     } catch (Exception e) {
       /* do cleanup here -- possibly rethrow e */
       e.printStackTrace();

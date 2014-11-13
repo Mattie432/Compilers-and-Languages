@@ -1,30 +1,14 @@
-/*
-  This example comes from a short article series in the Linux
-  Gazette by Richard A. Sevenich and Christopher Lopes, titled
-  "Compiler Construction Tools". The article series starts at
-
-  http://www.linuxgazette.com/issue39/sevenich.html
-
-  Small changes and updates to newest JFlex+Cup versions
-  by Gerwin Klein
-*/
-
-/*
-  Commented By: Christopher Lopes
-  File Name: ycalc.cup
-  To Create: > java java_cup.Main < ycalc.cup
-*/
-
-
 /* ----------------------Preliminary Declarations Section--------------------*/
 
 /* Import the class java_cup.runtime.*  */
 package ex2.JCup;
 import java_cup.runtime.*;
+import ex2.JCup.ParserTokens.*;
 
 /* Parser code to change the way the parser reports errors (include
    line and column INT of the error). */
 parser code {:
+
 
     /* Change the method report_error so it will display the line and
        column of where the error occurred in the input as well as the
@@ -81,54 +65,27 @@ parser code {:
 
 
 /* ------------Declaration of Terminals and Non Terminals Section----------- */
-
-/* Terminals (tokens returned by the scanner).
-
-   Terminals that have no value are listed first and then terminals
-   that do have an value, in this case an integer value, are listed on
-   the next line down. */
 terminal           PLUS, MINUS, TIMES, DIVIDE, LPAREN, RPAREN;
-terminal Integer   INT, ID;
+terminal Integer   INT;
+terminal Integer    ID;
 
-/* Non terminals used in the grammar section.
-
-   Non terminals that have an object value are listed first and then
-   non terminals that have an integer value are listed.  An object
-   value means that it can be any type, it isn't set to a specific
-   type.  So it could be an Integer or a String or whatever. */
-non terminal Object     E, T;
-non terminal Integer    F;
-
+non terminal E     E;
+non terminal T     T;
+non terminal F     F;
 
 /* -------------Precedence and Associatively of Terminals Section----------- */
 
-/*
-  Precedence of non terminals could be defined here.  If you do define
-  precedence here you won't need to worry about precedence in the
-  Grammar Section, i.e. that TIMES should have a higher precedence
-  than PLUS.
-
-  The precedence defined here would look something like this where the
-  lower line always will have higher precedence than the line before it.
-
   precedence left PLUS, MINUS;
   precedence left TIMES, DIVIDE;
-*/
-
 
 /* ----------------------------Grammar Section-------------------- */
 
 /* The grammar for our parser.
-
 E ::= E + T | E - T | T
-
 T ::= T * F | T / F | F
-
 F ::= (E) | INT | ID
-
-
 */
 
-   E ::= E PLUS T | E MINUS T | T;
-   T ::= T TIMES F | T DIVIDE F | F;
-  F ::= LPAREN E RPAREN | INT | ID;
+  E ::= E:l PLUS T:r  {: RESULT = new PlusE(l,r); :} | E:l MINUS T:r  {: RESULT = new MinusE(l,r); :} | T:t {: RESULT = new TE(t); :} ;
+  T ::= T:l TIMES F:r {: RESULT = new MultiplyT(l,r); :} | T:l DIVIDE F:r {: RESULT = new DivideT(l,r); :} | F:f {: RESULT = new FT(f); :} ;
+  F ::= LPAREN E:e RPAREN {: RESULT = new FBRACKET(e); :} | INT:i {: RESULT = new INT(i); :}  | ID:s {: RESULT = new ID(s); :} ;

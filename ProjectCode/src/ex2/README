@@ -1,2 +1,6 @@
 Run the Main.java file to test the system.
 The input can be changed in the file test.txt
+
+Each of the classes parser, sym and lexer can be generated with JCup/Jflex respectively and is done so by runnign the "create.bat" in each folder.
+
+The classes in the "ParserTokens" folder are used to store the value of the node in the tree. This is then used to print the tree structure to the terminal.

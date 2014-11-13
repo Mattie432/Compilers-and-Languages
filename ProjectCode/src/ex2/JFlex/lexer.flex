@@ -1,23 +1,3 @@
-/*
-  This example comes from a short article series in the Linux
-  Gazette by Richard A. Sevenich and Christopher Lopes, titled
-  "Compiler Construction Tools". The article series starts at
-
-  http://www.linuxgazette.com/issue39/sevenich.html
-
-  Small changes and updates to newest JFlex+Cup versions
-  by Gerwin Klein
-*/
-
-/*
-  Commented By: Christopher Lopes
-  File Name: lcalc.flex
-  To Create: > jflex lcalc.flex
-
-  and then after the parser is created
-  > javac Lexer.java
-*/
-
 /* --------------------------Usercode Section------------------------ */
 package ex2.JFlex;
 import java_cup.runtime.*;

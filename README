@@ -54,3 +54,54 @@ for input `( 5 + 4 )`
 ```
 
 Code for this is available [here](https://github.com/Mattie432/Compilers-and-Languages/tree/master/ProjectCode/src/ex1).
+
+#Ex2 - Parser Generators
+###### Question
+```
+E ::= E + T | E - T | T
+
+T ::= T * F | T / F | F
+
+F ::= (E) | INT | ID
+```
+
+Where INT and ID are integers and standard programming-language variable names respectively.   Using JCup, bison or similar, implement a parser for this language.  You can either use JFlex/flex to generate a lexical analyser, or use the one you wrote yourself in part 1 (note that interfacing a hand-written lexer to the parser may be more complex than using flex).  Again, as a minimum your parser should accept valid and reject invalid strings, but you can add other features as you wish (printing parse tree, evaluating expressions, etc).
+
+###### Solution
+I first used JFlex to create a lexer for the language. The lexers structure is specified in the 'lexer.flex' file which is passed to the jflex jar to create a java class file which will lex the input.
+
+Next I used JCup to create a parser for the language. The parsers structure is specified in the 'parser.cup' file which is passed to the JCup jar to create a Java class file which will parse the input.
+
+I also manually created the ParserToken classes which the parser interacts with in order to produce a tree node structure I could then parse and create a binary tree from. This is shown below.
+```
+ ( 4 / 3 +  ( 4 * 2 )  )
+
+\-- E
+    \-- T
+        \-- F
+            |-- (
+            |-- E
+            |   |-- E
+            |   |   \-- T
+            |   |       |-- T
+            |   |       |   \-- F
+            |   |       |       \-- INT
+            |   |       \-- /
+            |   |       \-- F
+            |   |           \-- INT
+                |-- +
+            |   \-- T
+            |       \-- F
+            |           |-- (
+            |           |-- E
+            |           |   \-- T
+            |           |       |-- T
+            |           |       |   \-- F
+            |           |       |       \-- INT
+            |           |       \-- *
+            |           |       \-- F
+            |           |           \-- INT
+            |           \-- )
+            \-- )
+```
+Code for this is available [here](https://github.com/Mattie432/Compilers-and-Languages/tree/master/ProjectCode/src/ex2).
