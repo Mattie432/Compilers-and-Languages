@@ -89,7 +89,7 @@ I also manually created the ParserToken classes which the parser interacts with 
             |   |       \-- /
             |   |       \-- F
             |   |           \-- INT
-                |-- +
+            |   |-- +
             |   \-- T
             |       \-- F
             |           |-- (
