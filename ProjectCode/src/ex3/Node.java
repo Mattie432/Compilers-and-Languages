@@ -3,14 +3,12 @@ package ex3;
 public class Node {
 
 	private int data;
-	private int left_pointer;
-	private int right_pointer;
+	private int left_pointer = -1;
+	private int right_pointer = -1;
 	private boolean active = true;
 
-	public Node(int data, int left_pointer, int right_pointer) {
+	public Node(int data) {
 		this.setData(data);
-		this.setLeft_pointer(left_pointer);
-		this.setRight_pointer(right_pointer);
 	}
 
 	public int getData() {
@@ -45,6 +43,14 @@ public class Node {
 		this.active = active;
 	}
 	
-	
+	public void addPointer(int pointer) throws Exception{
+		if(left_pointer == -1){
+			left_pointer = pointer;
+		}else if(right_pointer == -1){
+			right_pointer = pointer;
+		}else{
+			throw new Exception("Error, both pointers of node are full.");
+		}
+	}
 }
 
