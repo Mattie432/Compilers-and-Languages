@@ -7,8 +7,10 @@ public class Node {
 	private int right_pointer = -1;
 	private boolean active = true;
 
-	public Node(int data) {
+	public Node(int data, int left_pointer, int right_pointer) {
 		this.setData(data);
+		this.right_pointer = right_pointer;
+		this.left_pointer = left_pointer;
 	}
 
 	public int getData() {
