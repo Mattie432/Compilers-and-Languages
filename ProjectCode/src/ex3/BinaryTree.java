@@ -8,6 +8,9 @@ public class BinaryTree {
 	private Node[] list = new Node[30];
 	Queue<Integer> freeIndexList = new LinkedList<Integer>();
 
+	/**
+	 * Constructor initializes the freeIndexList to each free index in list.
+	 */
 	public BinaryTree() {
 		// Initiate the free index queue
 		for (int i = 0; i < list.length; i++) {
@@ -40,7 +43,9 @@ public class BinaryTree {
 			// Check if this is a root node
 			if (rootIndex == -1) {
 				// Is a root node
+				
 				rootIndex = index;
+				
 			} else {
 				// Is not a root node
 
@@ -68,7 +73,7 @@ public class BinaryTree {
 	 * branch.
 	 * 
 	 * @param node
-	 *            : Node - a node with an empty branch
+	 *            : Node - the root node to start the seach
 	 * @return Node - the node with empty branch
 	 */
 	private Node searchTreeForFreeBranch(Node node) {
