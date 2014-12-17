@@ -6,7 +6,6 @@
 
 package ex2.JCup;
 
-import java_cup.runtime.*;
 import ex2.JCup.ParserTokens.*;
 
 /** CUP v0.11a beta 20060608 generated parser.
@@ -15,10 +14,12 @@ import ex2.JCup.ParserTokens.*;
 public class parser extends java_cup.runtime.lr_parser {
 
   /** Default constructor. */
-  public parser() {super();}
+  @SuppressWarnings("deprecation")
+public parser() {super();}
 
   /** Constructor which sets the default scanner. */
-  public parser(java_cup.runtime.Scanner s) {super(s);}
+  @SuppressWarnings("deprecation")
+public parser(java_cup.runtime.Scanner s) {super(s);}
 
   /** Constructor which sets the default scanner. */
   public parser(java_cup.runtime.Scanner s, java_cup.runtime.SymbolFactory sf) {super(s,sf);}
@@ -87,7 +88,7 @@ public class parser extends java_cup.runtime.lr_parser {
   public java_cup.runtime.Symbol do_action(
     int                        act_num,
     java_cup.runtime.lr_parser parser,
-    java.util.Stack            stack,
+    @SuppressWarnings("rawtypes") java.util.Stack            stack,
     int                        top)
     throws java.lang.Exception
   {
@@ -173,10 +174,11 @@ class CUP$parser$actions {
   }
 
   /** Method with the actual generated action code. */
-  public final java_cup.runtime.Symbol CUP$parser$do_action(
+  @SuppressWarnings("unused")
+public final java_cup.runtime.Symbol CUP$parser$do_action(
     int                        CUP$parser$act_num,
     java_cup.runtime.lr_parser CUP$parser$parser,
-    java.util.Stack            CUP$parser$stack,
+    @SuppressWarnings("rawtypes") java.util.Stack            CUP$parser$stack,
     int                        CUP$parser$top)
     throws java.lang.Exception
     {

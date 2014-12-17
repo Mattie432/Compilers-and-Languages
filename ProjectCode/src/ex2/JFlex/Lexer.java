@@ -201,7 +201,8 @@ public class Lexer implements java_cup.runtime.Scanner {
   private int yyline;
 
   /** the number of characters up to the start of the matched text */
-  private int yychar;
+  @SuppressWarnings("unused")
+private int yychar;
 
   /**
    * the number of characters from the last newline up to the start of the 
@@ -212,7 +213,8 @@ public class Lexer implements java_cup.runtime.Scanner {
   /** 
    * zzAtBOL == true <=> the scanner is currently at the beginning of a line
    */
-  private boolean zzAtBOL = true;
+  @SuppressWarnings("unused")
+private boolean zzAtBOL = true;
 
   /** zzAtEOF == true <=> the scanner is at the EOF */
   private boolean zzAtEOF;

@@ -6,11 +6,15 @@ public class Node {
 	private int left_pointer = -1;
 	private int right_pointer = -1;
 	private boolean active = true;
+	private Node[] nodeList;
+	private int index;
 
-	public Node(int data, int left_pointer, int right_pointer) {
+	public Node(int data, int left_pointer, int right_pointer, Node[] nodeList, int index) {
 		this.setData(data);
 		this.right_pointer = right_pointer;
 		this.left_pointer = left_pointer;
+		this.nodeList = nodeList;
+		this.setIndex(index);
 	}
 
 	public int getData() {
@@ -53,6 +57,41 @@ public class Node {
 		}else{
 			throw new Exception("Error, both pointers of node are full.");
 		}
+	}
+	
+	/**
+	 * Recursively print from this node.
+	 */
+	public void print(){
+		print("",true);
+	}
+	
+	/**
+	 * Recursively prints this node and its children to the console.
+	 * @param prefix : String - the prefix of the line
+	 * @param isTail : Boolean - is this a tail?
+	 */
+	private void print(String prefix, boolean isTail) {
+        System.out.println(prefix + (isTail ? "└── " : "├── ") + data);
+
+        //print left child
+        if (left_pointer != -1 && right_pointer != -1) {
+            nodeList[left_pointer].print(prefix + (isTail ?"    " : "│   "), false);
+        }else if(left_pointer != -1){
+            nodeList[left_pointer].print(prefix + (isTail ?"    " : "│   "), true);
+        }
+        //print right child
+        if (right_pointer != -1) {
+            nodeList[right_pointer].print(prefix + (isTail ?"    " : "│   "), true);
+        }
+    }
+
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
 	}
 }
 

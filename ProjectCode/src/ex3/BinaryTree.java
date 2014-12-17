@@ -1,11 +1,12 @@
 package ex3;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class BinaryTree {
 	int rootIndex = -1;
-	private Node[] list = new Node[30];
+	private Node[] list = new Node[9];
 	Queue<Integer> freeIndexList = new LinkedList<Integer>();
 
 	/**
@@ -18,6 +19,10 @@ public class BinaryTree {
 		}
 	}
 
+	public Node[] getList() {
+		return list;
+	}
+
 	/**
 	 * Adds an new node with a value into the tree. This is stored in a free
 	 * space in the list array and is appended to a free branch in the tree.
@@ -27,15 +32,20 @@ public class BinaryTree {
 	 * @throws Exception
 	 */
 	public void addElement(int value) throws Exception {
-		
-		//Check if there is any free space
-		if (!freeIndexList.isEmpty()) {
-			
-			// Create new node with value
-			Node node = new Node(value, -1, -1);
+		System.out.println("Adding element, " + value + ", to the list.");
+		// Check if there is any free space
+		if (freeIndexList.isEmpty()) {
+			throw new Exception("ERROR: no free space in the tree.");
+		} else if (checkTreeForValue(value)) {
+			throw new Exception("Element '" + value
+					+ "' is already in the tree");
+		} else {
 
 			// Find free index
 			int index = freeIndexList.poll();
+
+			// Create new node with value
+			Node node = new Node(value, -1, -1, list, index);
 
 			// assign node to free index in array
 			list[index] = node;
@@ -43,9 +53,9 @@ public class BinaryTree {
 			// Check if this is a root node
 			if (rootIndex == -1) {
 				// Is a root node
-				
+
 				rootIndex = index;
-				
+
 			} else {
 				// Is not a root node
 
@@ -56,16 +66,181 @@ public class BinaryTree {
 				nodeWithEmptyBranch.addPointer(index);
 
 			}
-		} else {
-			//No free space
-			throw new Exception("No free space to store the value");
 		}
 	}
 
-	public void deleteNode() {
-		// need to look for pointers pointing to the index of the item to be
-		// deleted
-		// if last node set rootIndex = -1
+	/**
+	 * Deletes a node by removing all pointer references to it. It replaces it
+	 * with the last node in the tree.
+	 * 
+	 * @param value
+	 *            : Int - the value to remove
+	 * @throws Exception
+	 *             - Throws exceotion if value dosent exist.
+	 */
+	public void deleteNode(int value) throws Exception {
+		System.out.println("Deleting value, " + value);
+		if (checkTreeForValue(value)) {
+
+			ArrayList<Node> orderedNodeList = getOrderedNodes();
+			Node lastNode = orderedNodeList.get(orderedNodeList.size() - 1);
+
+			// check if the last node is the one to delete
+			if(list[rootIndex].getData() == value){
+				//item to del is root node
+				
+				//set pointers of last node to the root node
+				lastNode.setLeft_pointer(list[rootIndex].getLeft_pointer());
+				lastNode.setRight_pointer(list[rootIndex].getRight_pointer());
+
+
+				// set node deleted to inactive
+				list[rootIndex].setActive(false);
+
+				// add index to free list
+				freeIndexList.add(rootIndex);
+				freeIndexList.remove(lastNode.getIndex());
+				rootIndex = lastNode.getIndex();
+				
+				
+			} else if (lastNode.getData() != value) {
+				
+				// Serch for node which points to the value
+				for (Node n : orderedNodeList) {
+					if (n.getLeft_pointer() != -1
+							&& list[n.getLeft_pointer()].getData() == value) {
+						// points to the value to be removed
+
+						// search for pointer to the last node
+						for (Node n2 : orderedNodeList) {
+
+							// null this pointer
+							if (n2.getLeft_pointer() == lastNode.getIndex()) {
+								n2.setLeft_pointer(-1);
+							} else if (n2.getRight_pointer() == lastNode
+									.getIndex()) {
+								n2.setRight_pointer(-1);
+							}
+						}
+
+						// Set the pointers of the last node to the pointers of
+						// the node thats being deleted
+						lastNode.setLeft_pointer(list[n.getLeft_pointer()]
+								.getLeft_pointer());
+						lastNode.setRight_pointer(list[n.getLeft_pointer()]
+								.getRight_pointer());
+
+						/*
+						 * Below is the garbage collection. Here the deleted
+						 * node is set to inactive (this is unimportant to the
+						 * program and is only used when printing the state of
+						 * the array).
+						 * 
+						 * The index of the deleted node is added to the free index array (but the elemnt is not removed, it can now be overwritten though).
+						 * 
+						 * sets the pointer of the node which points to the deleted node to its replacement (the last node in the tree) 
+						 */
+
+						// set node deleted to inactive
+						list[n.getLeft_pointer()].setActive(false);
+
+						// add index to free list
+						freeIndexList.add(n.getLeft_pointer());
+
+						// sets pointer of the orig node to the last node
+						n.setLeft_pointer(lastNode.getIndex());
+
+						// remove the lastNode from teh free list
+						//freeIndexList.remove(lastNode.getIndex());
+
+					} else if (n.getRight_pointer() != -1
+							&& list[n.getRight_pointer()].getData() == value) {
+						// points to the value to be removed
+
+						// search for pointer to the last node
+						for (Node n2 : orderedNodeList) {
+
+							// null this pointer
+							if (n2.getLeft_pointer() == lastNode.getIndex()) {
+								n2.setLeft_pointer(-1);
+							} else if (n2.getRight_pointer() == lastNode
+									.getIndex()) {
+								n2.setRight_pointer(-1);
+							}
+						}
+
+						// Set the pointers of the last node to the pointers of
+						// the node thats being deleted
+						lastNode.setLeft_pointer(list[n.getRight_pointer()]
+								.getLeft_pointer());
+						lastNode.setRight_pointer(list[n.getRight_pointer()]
+								.getRight_pointer());
+						/*
+						 * Below is the garbage collection. Here the deleted
+						 * node is set to inactive (this is unimportant to the
+						 * program and is only used when printing the state of
+						 * the array).
+						 * 
+						 * The index of the deleted node is added to the free index array (but the elemnt is not removed, it can now be overwritten though).
+						 * 
+						 * sets the pointer of the node which points to the deleted node to its replacement (the last node in the tree) 
+						 */
+						
+						// set node deleted to inactive
+						list[n.getRight_pointer()].setActive(false);
+
+						// add index to free list
+						freeIndexList.add(n.getRight_pointer());
+
+						// sets pointer of the orig node to the last node
+						n.setRight_pointer(lastNode.getIndex());
+
+						// remove the lastNode from teh free list
+						//freeIndexList.remove(lastNode.getIndex());
+					}
+				}
+			} else {
+				// node to del is last node.
+				if (orderedNodeList.size() == 1) {
+
+					// node to delete is the only node
+					rootIndex = -1;
+					freeIndexList.add(lastNode.getIndex());
+					lastNode.setActive(false);
+
+				} else {
+
+					for (Node n : orderedNodeList) {
+						if (n.getLeft_pointer() == lastNode.getIndex()) {
+							n.setLeft_pointer(-1);
+						} else if (n.getRight_pointer() == lastNode.getIndex()) {
+							n.setRight_pointer(-1);
+						}
+					}
+
+					// add index to the free list
+					freeIndexList.add(lastNode.getIndex());
+					lastNode.setActive(false);
+				}
+			}
+
+		} else {
+			// item does not exist
+			throw new Exception("Item to delete, " + value
+					+ ", does not exist.");
+		}
+
+	}
+
+	/**
+	 * Print the entire binary tree to the console.
+	 */
+	public void printTree() {
+		if (rootIndex == -1) {
+			System.out.println("Tree is empty");
+		} else {
+			list[rootIndex].print();
+		}
 	}
 
 	/**
@@ -114,4 +289,52 @@ public class BinaryTree {
 		}
 	}
 
+	/**
+	 * Checks to see if the binary tree has the value in it.
+	 * 
+	 * @param value
+	 *            : Int - the value to check for
+	 * @return Boolean - Is it there?
+	 */
+	public boolean checkTreeForValue(int value) {
+		for (int i = 0; i < list.length; i++) {
+			Node item = list[i];
+			if (item != null && item.getData() == value) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	// TODO
+	public ArrayList<Node> getOrderedNodes() throws Exception {
+		if (rootIndex != -1) {
+			ArrayList<Node> queue = new ArrayList<Node>();
+			queue.add(list[rootIndex]);
+			getOrderedNodes(queue, 0);
+			return queue;
+		}
+		throw new Exception("Root node empty, cannot search tree");
+	}
+
+	// TODO
+	private void getOrderedNodes(ArrayList<Node> nodeList, int currIndex) {
+		// get elem from top of queue
+		Node item = nodeList.get(currIndex);
+
+		if (item.getLeft_pointer() != -1) {
+			nodeList.add(list[item.getLeft_pointer()]);
+		}
+
+		if (item.getRight_pointer() != -1) {
+			nodeList.add(list[item.getRight_pointer()]);
+		}
+
+		if (currIndex + 1 < nodeList.size()) {
+			// repeat
+			getOrderedNodes(nodeList, currIndex + 1);
+		}
+
+	}
 }
