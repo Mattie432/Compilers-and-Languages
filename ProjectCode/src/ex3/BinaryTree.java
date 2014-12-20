@@ -19,6 +19,11 @@ public class BinaryTree {
 		}
 	}
 
+	/**
+	 * Getter method for the list of nodes.
+	 * 
+	 * @return Node[] - list of trees nodes
+	 */
 	public Node[] getList() {
 		return list;
 	}
@@ -94,7 +99,7 @@ public class BinaryTree {
 
 				// remove pointers to the last node
 				for (Node n : list) {
-					if(n != null){
+					if (n != null) {
 						if (n.getLeft_pointer() == lastNode.getIndex()) {
 							n.setLeft_pointer(-1);
 						} else if (n.getRight_pointer() == lastNode.getIndex()) {
@@ -328,7 +333,13 @@ public class BinaryTree {
 		return false;
 	}
 
-	// TODO
+	/**
+	 * Returns a list of the nodes of the tree in order from top to bottom, left
+	 * to right. This walks the tree and keeps a log of all the node values.
+	 * 
+	 * @return ArrayList<Node> - ordered list of tree nodes
+	 * @throws Exception
+	 */
 	public ArrayList<Node> getOrderedNodes() throws Exception {
 		if (rootIndex != -1) {
 			ArrayList<Node> queue = new ArrayList<Node>();
@@ -339,7 +350,18 @@ public class BinaryTree {
 		throw new Exception("Root node empty, cannot search tree");
 	}
 
-	// TODO
+	/**
+	 * Returns a list of the nodes of the tree in order from top to bottom, left
+	 * to right. This walks the tree and keeps a log of all the node values.
+	 * This alters the nodelist while the method runs and adds the new elements
+	 * to it.
+	 * 
+	 * @param nodeList
+	 *            : ArrayList<Node> - list of nodes in the tree, should have the
+	 *            root node already.
+	 * @param currIndex
+	 *            : Int - the index to start at (default 0)
+	 */
 	private void getOrderedNodes(ArrayList<Node> nodeList, int currIndex) {
 		// get elem from top of queue
 		Node item = nodeList.get(currIndex);
