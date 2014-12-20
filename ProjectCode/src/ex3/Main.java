@@ -1,11 +1,17 @@
 package ex3;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Scanner;
+
+import com.sun.xml.internal.fastinfoset.tools.PrintTable;
 
 public class Main {
 
 	static BinaryTree bt = new BinaryTree();
-
+	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	public static void main(String[] args) {
 
 		try {
@@ -36,9 +42,103 @@ public class Main {
 			System.out.println("and then adds 6 elements back.");
 			System.out.println();
 			test3();
+			
+			//create a new tree
+			bt = new BinaryTree();
+			bt.addElement(1);
+			bt.addElement(2);
+			bt.addElement(3);
+			bt.addElement(4);
+			bt.addElement(5);
+			bt.addElement(6);
+			bt.addElement(7);
+			bt.addElement(8);
+			bt.addElement(9);
+			System.out.println();
+			
+			printHelp();
+			userInput();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private static void printHelp(){
+		System.out.println("---------- User Input ----------");
+		System.out.println("List of commands: X is an int value");
+		System.out.println();
+		System.out.println("add X      - adds an element with int value X");
+		System.out.println("del X      - deletes element with value X");
+		System.out.println("check X    - is element in the tree? true/false");
+		System.out.println("printTree  - prints the tree");
+		System.out.println("printArray - prints the array");
+		System.out.println("newTree    - creates a new empty tree");
+		System.out.println("help       - prints list of commands");
+		System.out.println("exit       - Exit the program");
+		System.out.println();
+	}
+	private static void userInput(){
+
+		Scanner sc = new Scanner(System.in);
+
+		for (prompt(); sc.hasNextLine(); prompt()) {
+
+		    String line = sc.nextLine().replaceAll("\n", "");
+
+		    // return pressed
+		    if (line.length() == 0) 
+		        continue;
+
+		    // split line into arguments
+		    String[] args = line.split(" ");    
+
+		    try {
+			
+		    // process arguments
+		    if (args.length == 1) {
+		        if (args[0].equalsIgnoreCase("exit")){
+		        	System.exit(0);
+		        }else if(args[0].equalsIgnoreCase("help")){
+		        	printHelp();
+		        }else if(args[0].equalsIgnoreCase("newTree")){
+		        	bt = new BinaryTree();
+		        }else if(args[0].equalsIgnoreCase("printTree")){
+		        	bt.printTree();
+		        }else if(args[0].equalsIgnoreCase("printArray")){
+		        	printArray();
+		        }else{
+		        	System.out.println("Error: Invalid command");
+		        }
+		    } else if (args.length == 2) {
+		        // do stuff with parameters
+		    	if(args[0].equalsIgnoreCase("add")){
+		    		bt.addElement(Integer.parseInt(args[1]));
+		    	}else if(args[0].equalsIgnoreCase("del")){
+		    		bt.deleteNode(Integer.parseInt(args[1]));
+		    	}else if(args[0].equalsIgnoreCase("check")){
+		    		boolean check = bt.checkTreeForValue(Integer.parseInt(args[1]));
+		    		System.out.print("Item " + args[1] + " ");
+		    		if(check){
+		    			System.out.println("is present");
+		    		}else{
+		    			System.out.println("is NOT present.");
+		    		}
+		    	}else{
+		        	System.out.println("Error: Invalid command");
+		        }
+		    }
+			
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
+
+        	userInput();
+		}
+	}
+	
+	private static void prompt() {
+		System.out.print(">> ");
 	}
 
 	private static void test1() throws Exception {
@@ -140,27 +240,40 @@ public class Main {
 
 	private static void printArray() {
 		System.out.print("Array  ");
-		String str = "[ ";
+		String str1 = "[ ";
+		String str2 = "[ ";
+		int maxLength = 0;
 		for (int i = 0; i < bt.getList().length; i++) {
 			if (bt.getList()[i] != null) {
-				str = str + bt.getList()[i].getData() + ", ";
-			} else {
-				str = str + "-, ";
-			}
-		}
-		str = str + "]";
-		System.out.println(str);
-		System.out.print("In use ");
-		str = "[ ";
-		for (int i = 0; i < bt.getList().length; i++) {
-			if (bt.getList()[i] != null && bt.getList()[i].getActive()) {
-				str = str + "T, ";
-			} else {
-				str = str + "F, ";
-			}
-		}
-		str = str + "]";
-		System.out.println(str);
+				str1 = str1 + bt.getList()[i].getData() + ", ";
+				
+				//gets the max length of the int value
+				//only used to correct spacing.
+				int valueLength = String.valueOf(bt.getList()[i].getData()).length();
+				String spacing = "";
+				for(int j = 0; j< valueLength-1; j++){
+					spacing +=" ";
+				}
+		
+				if (bt.getList()[i] != null && bt.getList()[i].getActive()) {
+					str2 = str2 + spacing + "T, ";
+				} else {
+					str2 = str2 + "F, ";
+				}
 
+				
+				
+			} else {
+				str1 = str1 + "-, ";
+				str2 = str2 + "F, ";
+			}
+		}
+		str1 = str1 + "]";
+		str2 = str2 + "]";
+		
+		System.out.println(str1);
+		System.out.print("In use ");
+		System.out.println(str2);
+		
 	}
 }

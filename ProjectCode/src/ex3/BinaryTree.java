@@ -85,14 +85,27 @@ public class BinaryTree {
 			ArrayList<Node> orderedNodeList = getOrderedNodes();
 			Node lastNode = orderedNodeList.get(orderedNodeList.size() - 1);
 
-			// check if the last node is the one to delete
-			if(list[rootIndex].getData() == value){
-				//item to del is root node
-				
-				//set pointers of last node to the root node
+			if (list[rootIndex].getData() == value) {
+				// item to del is root node
+
+				// set pointers of last node to the root node
 				lastNode.setLeft_pointer(list[rootIndex].getLeft_pointer());
 				lastNode.setRight_pointer(list[rootIndex].getRight_pointer());
 
+				// remove pointers to the last node
+				for (Node n : list) {
+					if(n != null){
+						if (n.getLeft_pointer() == lastNode.getIndex()) {
+							n.setLeft_pointer(-1);
+						} else if (n.getRight_pointer() == lastNode.getIndex()) {
+							n.setRight_pointer(-1);
+						}
+					}
+				}
+
+				// null the pointers of the first node
+				list[rootIndex].setLeft_pointer(-1);
+				list[rootIndex].setRight_pointer(-1);
 
 				// set node deleted to inactive
 				list[rootIndex].setActive(false);
@@ -101,10 +114,10 @@ public class BinaryTree {
 				freeIndexList.add(rootIndex);
 				freeIndexList.remove(lastNode.getIndex());
 				rootIndex = lastNode.getIndex();
-				
-				
+
+				// check if the last node is the one to delete
 			} else if (lastNode.getData() != value) {
-				
+
 				// Serch for node which points to the value
 				for (Node n : orderedNodeList) {
 					if (n.getLeft_pointer() != -1
@@ -136,9 +149,13 @@ public class BinaryTree {
 						 * program and is only used when printing the state of
 						 * the array).
 						 * 
-						 * The index of the deleted node is added to the free index array (but the elemnt is not removed, it can now be overwritten though).
+						 * The index of the deleted node is added to the free
+						 * index array (but the elemnt is not removed, it can
+						 * now be overwritten though).
 						 * 
-						 * sets the pointer of the node which points to the deleted node to its replacement (the last node in the tree) 
+						 * sets the pointer of the node which points to the
+						 * deleted node to its replacement (the last node in the
+						 * tree)
 						 */
 
 						// set node deleted to inactive
@@ -151,7 +168,7 @@ public class BinaryTree {
 						n.setLeft_pointer(lastNode.getIndex());
 
 						// remove the lastNode from teh free list
-						//freeIndexList.remove(lastNode.getIndex());
+						// freeIndexList.remove(lastNode.getIndex());
 
 					} else if (n.getRight_pointer() != -1
 							&& list[n.getRight_pointer()].getData() == value) {
@@ -181,11 +198,15 @@ public class BinaryTree {
 						 * program and is only used when printing the state of
 						 * the array).
 						 * 
-						 * The index of the deleted node is added to the free index array (but the elemnt is not removed, it can now be overwritten though).
+						 * The index of the deleted node is added to the free
+						 * index array (but the elemnt is not removed, it can
+						 * now be overwritten though).
 						 * 
-						 * sets the pointer of the node which points to the deleted node to its replacement (the last node in the tree) 
+						 * sets the pointer of the node which points to the
+						 * deleted node to its replacement (the last node in the
+						 * tree)
 						 */
-						
+
 						// set node deleted to inactive
 						list[n.getRight_pointer()].setActive(false);
 
@@ -196,7 +217,7 @@ public class BinaryTree {
 						n.setRight_pointer(lastNode.getIndex());
 
 						// remove the lastNode from teh free list
-						//freeIndexList.remove(lastNode.getIndex());
+						// freeIndexList.remove(lastNode.getIndex());
 					}
 				}
 			} else {
