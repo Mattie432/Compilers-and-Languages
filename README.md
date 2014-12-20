@@ -123,7 +123,8 @@ New items are dynamically allocated to the next free position in the tree.
 
 The program initially runs a trio of tests to demonstate these features and then allows the user to enter input and interact with the tree.
 
-Commands:```
+Commands:
+```
 add X      - adds an element with int value X
 del X      - deletes element with value X
 check X    - is element in the tree? true/false
